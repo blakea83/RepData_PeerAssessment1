@@ -3,7 +3,7 @@ title: "Data_Science_5_a_1"
 output: html_document
 ---
 Setting Working directory
-```{r echo=FALSE}
+```{r echo=TRUE}
 setwd("c:/R/c5p1/RepData_PeerAssessment1")
 ```
 
@@ -11,28 +11,28 @@ setwd("c:/R/c5p1/RepData_PeerAssessment1")
 
 
 Unzipping the base data
-```{r echo=FALSE}
+```{r echo=TRUE}
 unzip("activity.zip")
 ```
 
 Reading in the Data csv data
-```{r echo=FALSE}
+```{r echo=TRUE}
 a<-read.csv("activity.csv")
 ```
 
 Loading the Correct R Packages for the Data Analysis
-```{r echo=FALSE}
+```{r echo=TRUE}
 library('dplyr')
 ```
 
 
 Adding the number of steps for each day 
-```{r echo=FALSE}
+```{r echo=TRUE}
 a1<-aggregate(steps ~date,data=a,sum)
 ```
 
 Creating a histogram of the steps each day. 
-```{r echo=FALSE}
+```{r echo=TRUE}
 hist(a1$steps, xlab="Steps per Day",ylab="Days",main="Histogram of Steps per Day")
 ```
 
@@ -40,12 +40,12 @@ hist(a1$steps, xlab="Steps per Day",ylab="Days",main="Histogram of Steps per Day
 
 
 Determine the mean and median of the steps taken in a day and ignoring the NAs.
-```{r echo=FALSE}
+```{r echo=TRUE}
 a2<-mean(a1[,2])
 a3<-median(a1[,2])
 ```
 
-```{r echo=FALSE}
+```{r echo=TRUE}
 print("Mean")
 a2
 print ("Median")
@@ -63,7 +63,7 @@ print ("Median")
 
 
 Making a plot of the daily activity pattern
-```{r echo=FALSE}
+```{r echo=TRUE}
 ## Find the average for each interval
 a4<-aggregate(steps ~interval,data=a,mean)
 plot(a4,type="l",main="Average Number of Steps for each Interval")
@@ -73,24 +73,24 @@ a5<-max(a4[,2])
 a6<-a4[match(a5,a4[,2]),1]
 ```
 The maximum Number of Steps occurs at interval
-```{r echo=FALSE}
+```{r echo=TRUE}
 a6
 ```
 
 
 Determining the number of NAs in the data set
-```{r echo=FALSE}
+```{r echo=TRUE}
 a7<-sum(is.na(a[,1]))
 ```
 Number of NAs
 
-```{r echo=FALSE}
+```{r echo=TRUE}
 a7
 ```
 
 The NAs will be replaced with the average value for the time interval from the entire dataset.
 
-```{r echo=FALSE}
+```{r echo=TRUE}
 ## number of measurements
 b1<-length(a[,1])
 
@@ -108,7 +108,7 @@ for (i in 1:b1) {
 b2<-aggregate(steps ~date,data=b,sum)
 
 ## Create a hisogram of the number of steps per day
-hist(b2$steps, xlab="Steps per Day",ylab="Days",Main="Number of Steps per Day")
+hist(b2$steps, xlab="Steps per Day",ylab="Days",main="Number of Steps per Day")
 ```
 
 
@@ -120,7 +120,7 @@ hist(b2$steps, xlab="Steps per Day",ylab="Days",Main="Number of Steps per Day")
 
 
 Determining the Mean and Median of the new dataset.
-``` {r echo=FALSE}
+``` {r echo=TRUE}
 ## Mean
 b3<-mean(b2[,2])
 ## Median
@@ -143,7 +143,7 @@ The distribution of the histogram does not appear to change significantly.
 
 Creating the factor variable for weekday or Weekend for the dataset.
 
-```{r echo=FALSE}
+```{r echo=TRUE}
 ## week day vector
 c1<-weekdays(as.Date(as.character(b[,2])))
 
@@ -160,20 +160,20 @@ d<-cbind(b,c2)
 
 
 Now sorting the dataset into weekdays and weekends
-```{r echo=FALSE}
+```{r echo=TRUE}
 d1<-filter(d,c2=="Weekday")
 d2<-filter(d,c2=="Weekend")
 
 ```
 
 Finding the average number of steps per interval for weekdays and weekends
-```{r echo=FALSE}
+```{r echo=TRUE}
 e1<-aggregate(steps ~interval,data=d1,mean)
 e2<-aggregate(steps ~interval,data=d2,mean)
 ```
 
 Plotting the graph with both weekday and Weekend data
-```{r echo=FALSE}
+```{r echo=TRUE}
 par("mfrow"=c(2,1))
 plot(e1,type="l",xlab="Interval in Minutes",ylab="Steps")
 title("Weekday Data")

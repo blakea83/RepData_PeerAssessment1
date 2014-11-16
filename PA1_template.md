@@ -4,24 +4,57 @@ output: html_document
 ---
 Setting Working directory
 
+```r
+setwd("c:/R/c5p1/RepData_PeerAssessment1")
+```
 
 
 
 
 Unzipping the base data
 
+```r
+unzip("activity.zip")
+```
 
 Reading in the Data csv data
 
+```r
+a<-read.csv("activity.csv")
+```
 
 Loading the Correct R Packages for the Data Analysis
 
+```r
+library('dplyr')
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+## 
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
 
 
 Adding the number of steps for each day 
 
+```r
+a1<-aggregate(steps ~date,data=a,sum)
+```
 
 Creating a histogram of the steps each day. 
+
+```r
+hist(a1$steps, xlab="Steps per Day",ylab="Days",main="Histogram of Steps per Day")
+```
+
 ![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
 
 
@@ -29,18 +62,38 @@ Creating a histogram of the steps each day.
 
 Determine the mean and median of the steps taken in a day and ignoring the NAs.
 
+```r
+a2<-mean(a1[,2])
+a3<-median(a1[,2])
+```
 
+
+```r
+print("Mean")
+```
 
 ```
 ## [1] "Mean"
+```
+
+```r
+a2
 ```
 
 ```
 ## [1] 10766.19
 ```
 
+```r
+print ("Median")
+```
+
 ```
 ## [1] "Median"
+```
+
+```r
+ a3
 ```
 
 ```
@@ -58,8 +111,26 @@ Determine the mean and median of the steps taken in a day and ignoring the NAs.
 
 
 Making a plot of the daily activity pattern
+
+```r
+## Find the average for each interval
+a4<-aggregate(steps ~interval,data=a,mean)
+plot(a4,type="l",main="Average Number of Steps for each Interval")
+```
+
 ![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
+
+```r
+## Find the interval with the maximum number of steps
+a5<-max(a4[,2])
+## find the interval number where the maximum occurs
+a6<-a4[match(a5,a4[,2]),1]
+```
 The maximum Number of Steps occurs at interval
+
+```r
+a6
+```
 
 ```
 ## [1] 835
@@ -68,8 +139,15 @@ The maximum Number of Steps occurs at interval
 
 Determining the number of NAs in the data set
 
+```r
+a7<-sum(is.na(a[,1]))
+```
 Number of NAs
 
+
+```r
+a7
+```
 
 ```
 ## [1] 2304
@@ -78,17 +156,25 @@ Number of NAs
 The NAs will be replaced with the average value for the time interval from the entire dataset.
 
 
-```
-## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
-## "Main" is not a graphical parameter
-```
+```r
+## number of measurements
+b1<-length(a[,1])
 
-```
-## Warning in axis(1, ...): "Main" is not a graphical parameter
-```
+## creating the array that will have values replaced in
+b=a
 
-```
-## Warning in axis(2, ...): "Main" is not a graphical parameter
+## Replacing NAs
+for (i in 1:b1) {
+        if(is.na(b[i,1])){
+                b[i,1]<-a4[match(b[i,3],a4[,1]),2]
+                }
+           
+        }
+## finding the total number of steps per day 
+b2<-aggregate(steps ~date,data=b,sum)
+
+## Create a hisogram of the number of steps per day
+hist(b2$steps, xlab="Steps per Day",ylab="Days",main="Number of Steps per Day")
 ```
 
 ![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13-1.png) 
@@ -103,6 +189,12 @@ The NAs will be replaced with the average value for the time interval from the e
 
 Determining the Mean and Median of the new dataset.
 
+```r
+## Mean
+b3<-mean(b2[,2])
+## Median
+b4<-median(b2[,2])
+```
 Mean with imputed Values:
 
 ```r
@@ -130,14 +222,45 @@ The distribution of the histogram does not appear to change significantly.
 Creating the factor variable for weekday or Weekend for the dataset.
 
 
+```r
+## week day vector
+c1<-weekdays(as.Date(as.character(b[,2])))
+
+### Replacing the character week days with weekend or weekday factors 
+i=0
+for (i in 1:b1){
+        if(c1[i]=="Saturday"|c1[i]=="Sunday"){c1[i]="Weekend"}
+        else {c1[i]="Weekday"}
+        
+        }
+c2<-as.factor(c1)
+d<-cbind(b,c2)
+```
 
 
 Now sorting the dataset into weekdays and weekends
 
+```r
+d1<-filter(d,c2=="Weekday")
+d2<-filter(d,c2=="Weekend")
+```
 
 Finding the average number of steps per interval for weekdays and weekends
 
+```r
+e1<-aggregate(steps ~interval,data=d1,mean)
+e2<-aggregate(steps ~interval,data=d2,mean)
+```
 
 Plotting the graph with both weekday and Weekend data
+
+```r
+par("mfrow"=c(2,1))
+plot(e1,type="l",xlab="Interval in Minutes",ylab="Steps")
+title("Weekday Data")
+plot(e2,type="l",xlab="Interval in Minutes",ylab="Steps")
+title ("Weekend Data")
+```
+
 ![plot of chunk unnamed-chunk-20](figure/unnamed-chunk-20-1.png) 
 

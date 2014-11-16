@@ -1,8 +1,0 @@
-title: 
-=======================================================
-
-
-Set Working directory
-```{r}
-setwd("c:/R/c5p1/RepData_PeerAssessment1")
-```
